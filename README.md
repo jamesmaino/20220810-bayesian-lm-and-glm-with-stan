@@ -253,7 +253,62 @@ p +
 ![prediction interval](./plots/plot5.png)
 While this sounds like more work, in practice it is a flexible approach that can allow us to very quickly make inference on any derived or compound parameters. 
 
-## Logistic regression (binoimal model)
+## Logistic regression (binomial model)
 
+Thanks to a little bit of linear algebra used with `model.matrix()` and the $X\textbf{b}$ operation in stan, the code is relatively easy to extend to other model families, such as binomial models. This is because if covariates change, we really only need to update the model matrix, rather than individually specifying covariates. 
 
+For the binomial data we will predict the plant species *setosa* from the `Sepal.Length` variable.
+
+```r
+d2 <- d %>%
+    mutate(setosa = as.integer(Species == "setosa"))
+```
+
+There are just a few changes to make. 
+
+Fit a binomial `glm`.
+
+```r
+glm2 <- glm(setosa ~ Sepal.Length, data = d2, family = binomial(link = "logit"))
+```
+
+The fitted values can be transformed back to the real scale using the inverse logit function 
+
+```r
+ilogit = function(x) exp(x)/(1+exp(x))
+```
+
+Update the outcome variable (1 = setosa; 0 otherwise).
+
+```r
+stan_data2 <- list(
+    # ...
+    y = d2$setosa,
+    # ...
+)
+```
+
+Update the stan file. 
+
+```stan
+// logit_model.stan 
+data {
+  int <lower = 0> N; 
+  int<lower=0,upper=1> y[N];
+  int<lower=0> K;   
+  matrix[N, K] X;  
+}
+
+parameters {
+  vector [K] beta;
+}
+
+model {
+    y ~ bernoulli_logit(X*beta);
+}
+```
+
+And that's it. 
+
+![biomial data](https://github.com/jamesmaino/20220810-bayesian-lm-and-glm-with-stan/blob/master/plots/plot8.png?raw=true)
 

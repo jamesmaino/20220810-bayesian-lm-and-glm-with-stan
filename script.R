@@ -147,8 +147,10 @@ p2 <- d2 %>%
     geom_point(aes(color = Species)) +
     dark_theme_grey()
 p2 
+ggsave("./plots/plot6.png", width = 8, height = 6)
 
 glm2 <- glm(setosa ~ Sepal.Length, data = d2, family = binomial(link = "logit"))
+
 
 ilogit = function(x) exp(x)/(1+exp(x))
 
@@ -168,7 +170,7 @@ p2 +
         color = NA
     )
 
-ggsave("./plots/plot6.png", width = 8, height = 6)
+ggsave("./plots/plot7.png", width = 8, height = 6)
 
 summary(glm2)
 
@@ -217,4 +219,4 @@ p2 +
         color = NA
     )
 
-ggsave("./plots/plot7.png", width = 8, height = 6)
+ggsave("./plots/plot8.png", width = 8, height = 6)
