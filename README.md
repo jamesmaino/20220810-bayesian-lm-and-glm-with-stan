@@ -253,3 +253,7 @@ p +
 ![prediction interval](./plots/plot5.png)
 While this sounds like more work, in practice it is a flexible approach that can allow us to very quickly make inference on any derived or compound parameters. 
 
+## Logistic regression (binoimal model)
+
+
+
